@@ -1,6 +1,8 @@
 // Expence Model
 
-var mongoose = require('mongoose'),
+var
+  Promise = require("bluebird"),
+  mongoose = require('mongoose'),
   Schema = mongoose.Schema;
 
 var ExpenseSchema = new Schema({
@@ -9,11 +11,30 @@ var ExpenseSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Member'
   },
-  paid_for: {
+  paid_for: [{
     type: Schema.Types.ObjectId,
     ref: 'Member'
-  },
+  }],
   description: 'String'
 });
+
+ExpenseSchema.statics.credit = function(amount, paidBy, paidFor, message) {
+  return new Promise(function(resolve, reject) {
+    var expense = new Expense({
+      amount: d,
+      paid_by: paidUser._id,
+      paid_for: paidFor,
+      description: message
+    });
+    expense.save(function(err) {
+      if (err) {
+        reject(err);
+      }
+      resolve(true);
+    });
+  });
+};
+
+
 
 mongoose.model('Expense', ExpenseSchema);

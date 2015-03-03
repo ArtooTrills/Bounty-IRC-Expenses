@@ -9,7 +9,7 @@ var config = {
       name: 'bounty-irc-expenses'
     },
     port: 3000,
-    db: 'mongodb://localhost/bounty-irc-expenses-development',
+    db: 'mongodb://localhost:27017/bounty-irc-expenses-development',
     irc: {
       server: 'chat.freenode.net',
       port: 8001,

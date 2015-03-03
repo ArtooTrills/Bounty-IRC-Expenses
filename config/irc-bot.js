@@ -1,6 +1,6 @@
-var irc = require('irc'),
-  mongoose = require('mongoose'),
-  Expense = mongoose.model('Expense');
+var irc = require('irc');
+var parser = require("../services/parser");
+var command = require("../services/commands");
 
 module.exports = function(config) {
 
@@ -16,14 +16,17 @@ module.exports = function(config) {
   });
 
   bot.addListener('message', function(from, to, message) {
-    var splits = message.split(" ");
+    command.credit(600, message, "all", from, function() {
+      bot.say(to, 'Knock knock!');
+    });
+    /*var splits = message.split(" ");
     var top = splits[0].splice(0);
     if (to === config.irc.name) {
       console.log(top, message);
       if (message.indexOf('Know any good jokes?') > -1 || message.indexOf('good joke') > -1) {
         bot.say(to, 'Knock knock!');
       }
-    }
+    }*/
   });
 
   bot.addListener('message', function(from, to, message) {

@@ -18,4 +18,6 @@ var app = express();
 require('./config/express')(app, config);
 var client = require('./config/irc-bot')(config);
 
+require("./config/seed")();
+
 app.listen(config.port);
