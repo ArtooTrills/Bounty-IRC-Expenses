@@ -1,13 +1,14 @@
-var irc = require('irc');
-var parser = require("../services/parser");
-var command = require("../services/commands");
+var
+  irc = require('irc'),
+  exec = require("../services/bot");
+
+console.log(exec)
 
 module.exports = function(config) {
 
   var keywords = ["@"];
 
-  var grammers = []
-
+  var grammers = [];
 
   var bot = new irc.Client(config.irc.server, config.irc.name, {
     channels: config.irc.channels,
@@ -16,9 +17,14 @@ module.exports = function(config) {
   });
 
   bot.addListener('message', function(from, to, message) {
-    command.credit(600, message, "all", from, function() {
-      bot.say(to, 'Knock knock!');
-    });
+
+    exec(to, from, message)
+      .then(function(result) {
+        bot.say(to, result);
+      })
+      .catch(function(err) {
+        bot.say(to, err);
+      });
     /*var splits = message.split(" ");
     var top = splits[0].splice(0);
     if (to === config.irc.name) {

@@ -12,14 +12,23 @@ var MemberSchema = new Schema({
 
 MemberSchema.statics.addMember = function(name) {
   return new Promise(function(resolve, reject) {
-    Member.findOneAndUpdate({
+    var Member = mongoose.model('Member');
+    Member.findOne({
       name: name
-    }, {
-      upsert: true
     }, function(err, member) {
-      if (err) reject("member already exist");
-      resolve("member added")
-    })
+      if (err) reject(err);
+      if (!member) {
+        var newMember = new Member({
+          name: name
+        });
+        newMember.save(function(err, member) {
+          if (err) reject("member already exist");
+          resolve(name + " created");
+        })
+      } else {
+        reject("Member already exist");
+      }
+    });
   });
 }
 
