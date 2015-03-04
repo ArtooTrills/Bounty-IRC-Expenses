@@ -16,6 +16,14 @@ var config = {
       channels: ["#expence-manager"],
       name: "embot",
       debug: true
+    },
+    smtp: {
+      host: "smtp.sendgrid.net",
+      port: 25,
+      auth: {
+        user: "webomail",
+        pass: "webonise6186"
+      }
     }
   },
 

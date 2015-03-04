@@ -1,6 +1,6 @@
 var
   irc = require('irc'),
-  exec = require("../services/bot");
+  exec = require("../lib/bot");
 
 console.log(exec)
 
