@@ -1,14 +1,9 @@
 var
   irc = require('irc'),
-  exec = require("../lib/bot");
-
-console.log(exec)
+  exec = require("../lib/bot"),
+  man = require("../lib/commands");
 
 module.exports = function(config) {
-
-  var keywords = ["@"];
-
-  var grammers = [];
 
   var bot = new irc.Client(config.irc.server, config.irc.name, {
     channels: config.irc.channels,
@@ -17,33 +12,27 @@ module.exports = function(config) {
   });
 
   bot.addListener('message', function(from, to, message) {
-
-    exec(to, from, message)
-      .then(function(result) {
-        bot.say(to, result);
-      })
-      .catch(function(err) {
-        bot.say(to, err);
-      });
-    /*var splits = message.split(" ");
-    var top = splits[0].splice(0);
-    if (to === config.irc.name) {
-      console.log(top, message);
-      if (message.indexOf('Know any good jokes?') > -1 || message.indexOf('good joke') > -1) {
-        bot.say(to, 'Knock knock!');
-      }
-    }*/
-  });
-
-  bot.addListener('message', function(from, to, message) {
-    if (message.indexOf('who is there?') > -1 || message.indexOf("who's there?") > -1 || message.indexOf("Who's there?") > -1 || message.indexOf("Who is there?") > -1) {
-      bot.say(to, 'Doris');
+    if ((/@bot/).test(message)) {
+      message = message.split("@bot")[1].trim();
+      exec(to, from, message)
+        .then(function(result) {
+          bot.say(to, result);
+        })
+        .catch(function(err) {
+          bot.say(to, err);
+        });
     }
   });
 
   bot.addListener('message', function(from, to, message) {
-    if (message.indexOf('Doris who?') > -1 || message.indexOf("doris who?") > -1) {
-      bot.say(to, "Doris locked, that's why I'm knocking!");
+    if ((/@bot/).test(message)) {
+      var data = "All Command Should start with my name i.e. @bot";
+      man.forEach(function(com) {
+        data += (com.name + "----\t---" + com.man + "\n")
+      })
+      if (message.indexOf('!help') > -1) {
+        bot.say(to, data);
+      }
     }
   });
 
