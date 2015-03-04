@@ -6,7 +6,7 @@ var keyword = {
   newO: "new"
 }
 
-var commands = ["addt", "addm"];
+var commands = ["addt", "addm", "mail", "report", "export"];
 
 function test(word, message) {
   var newReg = new RegExp(word);
@@ -19,41 +19,51 @@ function required(message, spliter) {
 }
 
 module.exports = {
-  parse: function(message) {
+  action: function(message) {
     var obj = {};
+
     var command = _(commands).filter(function(com) {
       var patt = new RegExp(com, "g");
       return message.match(patt);
     });
+
     if (command.length > 1) {
       throw new Error("Mutiple Command found");
     }
-    obj.operation = command[0].trim();
-    if (obj.operation === "addt") {
-      var subMsg = message.split("addt")[1];
-      if (test(keyword.owe)) {
-        var usernameAmount = required(subMsg, keyword.owe).split(" ");
-        obj.paidFor = usernameAmount[0];
+    return obj.operation = command[0].trim();
+  },
+
+  member: function(message) {
+    return {
+      userName: required(message, keyword.newO)
+    }
+  },
+
+  transaction: function(message) {
+    var obj = {};
+    var subMsg = message.split("addt")[1].trim();
+    if (test(keyword.owe, message)) {
+      var usernameAmount = required(subMsg, keyword.owe).split(" ");
+      obj.paidFor = usernameAmount[0];
+      obj.amount = usernameAmount[1];
+      return obj;
+    }
+
+    if (test(keyword.paid, message)) {
+      var usernameAmount = required(subMsg, keyword.paid).split(" ");
+      if ((/\d+/).test(usernameAmount[0])) {
+        obj.amount = usernameAmount[0];
+        if ((/all/).test(subMsg)) {
+          obj.userName = "all"
+        }
+        return obj;
+      }
+
+      if (_.isString(usernameAmount[0])) {
+        obj.userName = usernameAmount[0];
         obj.amount = usernameAmount[1];
         return obj;
       }
-
-      if (test(keyword.paid)) {
-        var usernameAmount = required(subMsg, keyword.paid).split(" ");
-        if (usernameAmount[0]) {
-          obj.userName = usernameAmount[0];
-        } else if (usernameAmount[1].indexOf('all')) {
-          obj.userName = "all";
-        }
-        obj.amount = usernameAmount[1].split(" ")[0];
-        return obj;
-      }
-
-    } else if (obj.operation === "addm") {
-      obj.userName = required(message, keyword.newO);
-      return obj;
-    } else {
-      throw new Error("No Command found in message")
     }
   }
 }

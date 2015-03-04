@@ -20,9 +20,10 @@ var ExpenseSchema = new Schema({
 
 ExpenseSchema.statics.credit = function(amount, paidBy, paidFor, message) {
   return new Promise(function(resolve, reject) {
+    var Expense = mongoose.model('Expense');
     var expense = new Expense({
-      amount: d,
-      paid_by: paidUser._id,
+      amount: amount,
+      paid_by: paidBy,
       paid_for: paidFor,
       description: message
     });
