@@ -15,17 +15,22 @@ var ExpenseSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Member'
   }],
+  date: {
+    type: Date,
+    default: Date.now
+  },
   description: 'String'
 });
 
-ExpenseSchema.statics.credit = function(amount, paidBy, paidFor, message) {
+ExpenseSchema.statics.credit = function(amount, paidBy, paidFor, message, date) {
   return new Promise(function(resolve, reject) {
     var Expense = mongoose.model('Expense');
     var expense = new Expense({
       amount: amount,
       paid_by: paidBy,
       paid_for: paidFor,
-      description: message
+      description: message,
+      date: date
     });
     expense.save(function(err) {
       if (err) {
@@ -35,6 +40,10 @@ ExpenseSchema.statics.credit = function(amount, paidBy, paidFor, message) {
     });
   });
 };
+
+ExpenseSchema.statics.findDebitByUsername = function(name) {
+
+}
 
 
 
