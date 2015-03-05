@@ -30,7 +30,7 @@ ExpenseSchema.statics.credit = function(amount, paidBy, paidFor, message, date) 
       paid_by: paidBy,
       paid_for: paidFor,
       description: message,
-      date: date
+      date: date || new Date()
     });
     expense.save(function(err) {
       if (err) {

@@ -1,7 +1,6 @@
 var express = require('express'),
   router = express.Router(),
   mongoose = require('mongoose'),
-  Article = mongoose.model('Article'),
   report = require("../../lib/report");
 
 module.exports = function(app) {
@@ -9,12 +8,8 @@ module.exports = function(app) {
 };
 
 router.get('/', function(req, res, next) {
-  Article.find(function(err, articles) {
-    if (err) return next(err);
-    res.render('index', {
-      title: 'Generator-Express MVC',
-      articles: articles
-    });
+  res.render('index', {
+    title: 'Graphs'
   });
 });
 
