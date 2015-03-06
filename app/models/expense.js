@@ -3,7 +3,8 @@
 var
   Promise = require("bluebird"),
   mongoose = require('mongoose'),
-  Schema = mongoose.Schema;
+  Schema = mongoose.Schema,
+  _ = require("underscore");
 
 var ExpenseSchema = new Schema({
   amount: 'Number',
@@ -22,24 +23,42 @@ var ExpenseSchema = new Schema({
   description: 'String'
 });
 
-ExpenseSchema.statics.credit = function(amount, paidBy, paidFor, message, date) {
+ExpenseSchema.statics.credit = function(exp) {
   return new Promise(function(resolve, reject) {
-    var Expense = mongoose.model('Expense');
-    var expense = new Expense({
-      amount: amount,
-      paid_by: paidBy,
-      paid_for: paidFor,
-      description: message,
-      date: date || new Date()
-    });
-    expense.save(function(err) {
-      if (err) {
-        reject(err);
-      }
+    Expense = mongoose.model('Expense');
+    var expense = new Expense(exp);
+    expense.save(function(err, result) {
+      if (err) reject(err);
       resolve(true);
     });
   });
 };
+
+ExpenseSchema.statics.findByMonth = function(month) {
+  return new Promise(function(resolve, reject) {
+    Expense = mongoose.model('Expense');
+    Expense.find({
+      $where: 'this.date.getMonth() === ' + month
+    }, function(err, expenses) {
+      if (err) reject(err);
+      Expense.populate(expenses, [{
+        path: 'paid_by'
+      }, {
+        path: 'paid_for'
+      }], function(err, result) {
+        if (err) reject(err);
+        result = _(result).chain().map(function(data) {
+          return {
+            paid_by: data.paid_by.name,
+            paid_for: _(data.paid_for).pluck("name"),
+            amount: data.amount
+          }
+        }).groupBy("paid_by").value();
+        resolve(result)
+      })
+    })
+  });
+}
 
 ExpenseSchema.statics.findDebitByUsername = function(name) {
 

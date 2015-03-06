@@ -2,34 +2,81 @@
 
 var
   Promise = require("bluebird"),
+  _ = require("underscore"),
   mongoose = require('mongoose'),
   Schema = mongoose.Schema;
 
 var MemberSchema = new Schema({
   name: 'String',
-  nick: 'String'
+  nick: 'String',
+  email: 'String'
 });
 
-MemberSchema.statics.addMember = function(name) {
+MemberSchema.statics.addMember = function(member) {
+  Member = mongoose.model('Member');
   return new Promise(function(resolve, reject) {
-    var Member = mongoose.model('Member');
     Member.findOne({
-      name: name
-    }, function(err, member) {
-      if (err) reject(err);
-      if (!member) {
-        var newMember = new Member({
-          name: name
-        });
-        newMember.save(function(err, member) {
-          if (err) reject("member already exist");
-          resolve(name + " created");
-        })
-      } else {
-        reject("Member already exist");
-      }
-    });
+      name: member.name
+    }).exec()
+      .then(function(members) {
+        if (!members) {
+          var newMember = new Member(member);
+          newMember.save(function(err, member) {
+            if (err) reject("member already exist");
+            resolve(name + " created");
+          })
+        } else {
+          reject("Member already exist");
+        }
+      }, function(err) {
+        reject(err);
+      });
   });
+}
+
+MemberSchema.statics.findByPaidId = function(data) {
+  return new Promise(function(resolve, reject) {
+    Member = mongoose.model('Member');
+    Member.find({}).exec()
+      .then(function(members) {
+        if (!members.length) {
+          reject("transaction not recoded, because " + data.paidFor + " is not a registerted member")
+        }
+
+        var paidBy = _(members).find(function(member) {
+          return member.name === data.paidBy;
+        });
+
+        if (!paidBy) {
+          reject("transaction not recoded, because user is not a registerted member")
+        }
+        if (data.paidFor === "all") {
+          var paidFor = _(members).chain()
+            .filter(function(member) {
+              return member.name !== data.paidBy;
+            })
+            .pluck("_id")
+            .value();
+        } else {
+          var paidFor = _(members).chain()
+            .filter(function(member) {
+              return member.name === data.paidFor;
+            })
+            .pluck("_id")
+            .value();
+        }
+
+        if (!paidFor) {
+          reject("transaction not recoded, because user is not a registerted member")
+        }
+        var share = data.amount / members.length;
+        resolve({
+          amount: share,
+          paid_for: paidFor,
+          paid_by: paidBy
+        })
+      })
+  })
 }
 
 mongoose.model('Member', MemberSchema);

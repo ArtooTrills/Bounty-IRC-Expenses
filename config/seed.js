@@ -7,16 +7,20 @@ module.exports = function() {
     if (members.length < 4) {
       Member.create([{
         name: "sameer",
-        nick: "sam"
+        nick: "sam",
+        email: "sameer@yopmail.com"
       }, {
         name: "shubham",
-        nick: "shub"
+        nick: "shub",
+        email: "shubham@yopmail.com"
       }, {
         name: "kaushik",
-        nick: "kush"
+        nick: "kush",
+        email: "kaushik@yopmail.com"
       }, {
         name: "dilip",
-        nick: "dilip"
+        nick: "dilip",
+        email: "dilip@yopmail.com"
       }], function(err, member) {
         if (err) console.log(err);
         console.log(member);
