@@ -14,23 +14,19 @@ router.get('/', function(req, res, next) {
 });
 
 
-router.get('/:year', function(req, res, next) {
+router.get('/:year/:month', function(req, res, next) {
   console.log(req.params.year)
-  report.getCurrentYear(req.params.year)
+  report.getCurrentYear(req.params.year, req.params.month)
     .then(function(result) {
-      var data = [{
-        "amount": 200,
-        "name": "yashprit"
-      }, {
-        "amount": 100,
-        "name": "ruby"
-      }, {
-        "amount": 20,
-        "name": "brijesh"
-      }]
-
+      var arr = [];
+      for (var key in result) {
+        arr.push({
+          amount: result[key],
+          name: key
+        })
+      }
       res.status(200).jsonp({
-        data: data
+        data: arr
       });
     })
     .catch(function(err) {

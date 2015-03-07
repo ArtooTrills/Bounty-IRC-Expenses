@@ -17,14 +17,7 @@ var config = {
       name: "embot",
       debug: true
     },
-    smtp: {
-      host: "smtp.sendgrid.net",
-      port: 25,
-      auth: {
-        user: "webomail",
-        pass: "webonise6186"
-      }
-    }
+    email: "example@gmail.com"
   },
 
   test: {
