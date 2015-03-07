@@ -5,6 +5,9 @@
   "scripts": {
     "start": "node app.js"
   },
+  "engines": {
+    "node": "0.10.x"
+  },
   "dependencies": {
     "bluebird": "^2.9.13",
     "body-parser": "~1.12.0",
