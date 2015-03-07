@@ -39,6 +39,7 @@ MemberSchema.statics.findByPaidId = function(data) {
     Member = mongoose.model('Member');
     Member.find({}).exec()
       .then(function(members) {
+        console.log(members);
         if (!members.length) {
           reject("transaction not recoded, because " + data.paidFor + " is not a registerted member")
         }
@@ -46,6 +47,8 @@ MemberSchema.statics.findByPaidId = function(data) {
         var paidBy = _(members).find(function(member) {
           return member.name === data.paidBy;
         });
+
+        console.log(paidBy);
 
         if (!paidBy) {
           reject("transaction not recoded, because user is not a registerted member")
@@ -65,6 +68,8 @@ MemberSchema.statics.findByPaidId = function(data) {
             .pluck("_id")
             .value();
         }
+
+        console.log(paidFor);
 
         if (!paidFor) {
           reject("transaction not recoded, because user is not a registerted member")
