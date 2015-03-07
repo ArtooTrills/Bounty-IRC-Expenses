@@ -26,7 +26,7 @@ var config = {
       name: 'bounty-irc-expenses'
     },
     port: process.env.PORT || 5000,
-    db: process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost:27017/bounty-irc-expenses-development',
+    db: process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://ds041821.mongolab.com:41821/heroku_app34657657',
     irc: {
       server: 'chat.freenode.net',
       port: 8001,

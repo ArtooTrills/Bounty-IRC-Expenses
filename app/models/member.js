@@ -51,7 +51,7 @@ MemberSchema.statics.findByPaidId = function(data) {
         console.log(paidBy);
 
         if (!paidBy) {
-          reject("transaction not recoded, because user is not a registerted member")
+          reject("transaction not recoded, because " + data.paidBy + " is not a registerted member")
         }
         if (data.paidFor === "all") {
           var paidFor = _(members).chain()
