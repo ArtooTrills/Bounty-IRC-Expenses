@@ -20,6 +20,23 @@ var config = {
     email: "example@gmail.com"
   },
 
+  heroku: {
+    root: rootPath,
+    app: {
+      name: 'bounty-irc-expenses'
+    },
+    port: process.env.PORT || 5000,
+    db: process.env.MONGOLAB_URI || process.env.MONGOHQ_URL,
+    irc: {
+      server: 'chat.freenode.net',
+      port: 8001,
+      channels: ["#expence-manager"],
+      name: "embot",
+      debug: true
+    },
+    email: "example@gmail.com"
+  },
+
   test: {
     root: rootPath,
     app: {
