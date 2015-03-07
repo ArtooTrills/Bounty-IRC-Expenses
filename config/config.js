@@ -30,11 +30,11 @@ var config = {
     irc: {
       server: 'chat.freenode.net',
       port: 8001,
-      channels: ["#expence-manager"],
-      name: "embot",
+      channels: ["#bounty-irc-expenses"],
+      name: "bountybot",
       debug: true
     },
-    email: "example@gmail.com"
+    email: "bountybot@gmail.com"
   },
 
   test: {
