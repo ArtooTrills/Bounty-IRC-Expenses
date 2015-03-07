@@ -21,9 +21,9 @@ MemberSchema.statics.addMember = function(member) {
       .then(function(members) {
         if (!members) {
           var newMember = new Member(member);
-          newMember.save(function(err, member) {
+          newMember.save(function(err, members) {
             if (err) reject("member already exist");
-            resolve(name + " created");
+            resolve(member.name + " created");
           })
         } else {
           reject("Member already exist");
