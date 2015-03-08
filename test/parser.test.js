@@ -31,6 +31,12 @@ describe("Parser test", function() {
       expect(parser.action()).to.be.equal("addt");
     });
 
+    it("test for addm along with email", function() {
+      var message = "@bot addm new @shrivatsa shrivatsa@yopmail.com"
+      var parser = new Parser(message);
+      expect(parser.action()).to.be.equal("addm");
+    });
+
     it("should genrate action", function() {
       var message = "@bot addt paid 600 for dinner addm yesterday. @all"
       var parser = new Parser(message);
@@ -232,7 +238,6 @@ describe("Parser test", function() {
       var message = "@bot addt. @kaushik paid 100 for coffee on March 31"
       var parser = new Parser(message);
       var object = parser.build("yashprit");
-      console.log(object)
       expect(object).to.be.deep.equal({
         paidBy: "kaushik",
         paidFor: "yashprit",
@@ -245,7 +250,6 @@ describe("Parser test", function() {
       var message = "@bot addt I owe @Dilip 50"
       var parser = new Parser(message);
       var object = parser.build("yashprit");
-      console.log(object)
       expect(object).to.be.deep.equal({
         paidBy: "dilip",
         paidFor: "yashprit",
@@ -253,6 +257,18 @@ describe("Parser test", function() {
         date: "8 3 2015"
       });
     });
+
+    it("build object for string [@bot addt paid 600 for dinner yesterday. @all]", function() {
+      var message = "@bot addt paid 600 for dinner yesterday. @all"
+      var parser = new Parser(message);
+      var object = parser.build("yashprit");
+      expect(object).to.be.deep.equal({
+        paidBy: "yashprit",
+        paidFor: "all",
+        amount: 600,
+        date: "7 3 2015"
+      });
+    })
 
     it("should throw an error for no keyword", function() {
       var message = "@bot addt I @Dilip 50"
