@@ -1,6 +1,7 @@
 var mongoose = require('mongoose'),
   Member = mongoose.model('Member');
 
+//seed file to populate uses
 module.exports = function() {
   Member.find({}, function(err, members) {
     if (err) console.log(err);

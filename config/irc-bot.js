@@ -1,3 +1,7 @@
+/**
+ * IRC bot communication
+ */
+
 var
   irc = require('irc'),
   exec = require("../lib/bot"),
