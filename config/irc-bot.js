@@ -16,7 +16,7 @@ module.exports = function(config) {
   });
 
   bot.addListener('message', function(from, to, message) {
-    if ((/@bot/).test(message)) {
+    if ((/@bot/).test(message) && message.indexOf('!help') === -1) {
       message = message.split("@bot")[1].trim();
       exec(to, from, message)
         .then(function(result) {
