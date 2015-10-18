@@ -1,0 +1,43 @@
+extends layout
+
+block content
+	.container
+		h1 
+			a(href="") Reports
+		br
+		br
+		form(name= "reportForm" role="form" method = "get" action="http://localhost:3000/search")
+			.form-group
+				label(for="personName") User Name:
+				select(name='personName').form-control()
+					each obj in users
+						option(value=obj) #{obj}
+				label(for="monthName") Month:
+				select(name='monthName').form-control()
+					each obj in months
+						option(value=obj) #{obj}
+				br
+				input.btn.btn-info(type="submit", value="Find")
+				br
+		.table-responsive
+			table.table.table-bordered
+				thead
+					tr
+						th Paid By
+						th Paid For
+						th Description
+						th Amount
+						th Date
+				tbody
+					each obj in result
+						tr
+							td=obj.paidBy
+							td=obj.paidFor
+							td=obj.desc
+							td=obj.money
+							td=obj.date
+		-var i=0
+		ul.pagination
+			while i++< totalPages
+				li 
+					a.page(href="http://localhost:3000/feedback?orgName="+orgName+"&page="+i+"&interviewName="+interName)=i
