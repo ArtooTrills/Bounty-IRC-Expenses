@@ -1,0 +1,21 @@
+Available Commands:
+
+addm => add members
+  Ex: addm member1,member2
+
+showm => show members
+
+addt => add transactions
+  Ex: addt paid 10 for dinner. member1,member2
+      addt member1 paid 10 for Lunch@McD. member1,member2
+      addt I owe member1 10
+      addt member1,member2 owe membern 10
+
+showt => displays current month transactions unless month is specified
+  Ex: showt
+      showt jan
+
+help => displays this message
+
+settle => Show computed settlements
+
