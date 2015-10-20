@@ -1,20 +1,34 @@
 var config = require('./config'),
   irc = require('irc'),
   parser = require('./parser'),
-  logger = require('./logger');
+  logger = require('./logger'),
+  adapter = require('./adapter');
 
 module.exports = (function () {
-  this.bot = new irc.Client(config.server, config.nick, {
+  var bot = new irc.Client(config.server, config.nick, {
     channels: config.channels,
     debug: true
   });
 
-  this.bot.addListener('message', function (from, to, message) {
+  bot.addListener('message', function (from, to, message) {
     // if bot is mentioned
+    console.log(from)
     if (message.indexOf('@' + config.nick) > -1) {
-      var data = parser.parse(message.replace('@' + config.nick).trim());
+      var parsed = parser
+        .parse(
+          message.replace('@' + config.nick, '')
+            .trim()
+            .toLowerCase(),
+           from
+        );
+
+      if (parsed) {
+        bot.say(to, adapter(parsed));
+      }
     }
   });
 
-  this.bot.addListener('error', logger.error);
+  bot.addListener('error', logger.error);
+
+  return bot;
 })();

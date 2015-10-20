@@ -1,5 +1,5 @@
 module.exports = {
-  server: 'chat.freenode.com',
+  server: 'chat.freenode.net',
   channels: ['#ArtooBot'],
   nick: 'cp3',
   debug: true

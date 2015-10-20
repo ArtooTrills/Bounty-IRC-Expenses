@@ -1,23 +1,16 @@
 var _ = require('lodash');
 
 module.exports = (function () {
-  var COMMANDS = {
-    addt: 'addTransaction',
-    settle: 'showSettlements',
-    addm: 'addMember',
-    showm: 'showMembers',
-    showt: 'showTransactions',
-    help: 'showHelp'
-  },
-
-  ALIASES = {
+  var ALIASES = {
     'i': 'self',
     'me': 'self'
-  }
+  },
+
+  COMMANDS = require('./commands'),
 
   FUNC = {
     addMember: function (message) {
-      return {event: 'addm', users: message.split(',')};
+      return {event: 'addm', data: message.split(',')};
     },
 
     showMembers: function () {
@@ -25,7 +18,7 @@ module.exports = (function () {
     },
 
     showTransactions: function (message) {
-      return {event: 'showt', month: message};
+      return {event: 'showt', data: message};
     },
 
     showSettlements: function () {
@@ -37,16 +30,17 @@ module.exports = (function () {
     },
 
     addTransaction: function (message, from) {
-      var recievers, payee, amount, date, name;
+      var recievers, payee, amount, date, name, type, transaction;
 
-      if (transaction.indexOf('paid') > -1) {
-        var data = message.split('.'),
-          transaction = data[0];
+      if (message.indexOf('paid') > -1) {
+        var data = message.split('.');
 
-        recievers = data[1].split(',');
+        transaction = data[0];
 
+        receivers = data[1].split(',');
+        receivers.push(from);
         transaction = _.compact(transaction.split(' '));
-
+        type = 'bill';
         if (transaction[0] === 'paid') {
           payee = 'self';
           amount = transaction[1];
@@ -59,20 +53,24 @@ module.exports = (function () {
           date = transaction[5] === 'on' ? transaction[6]: transaction[5];
         }
       } else if (message.indexOf('owe') > -1) {
-        transaction = _.compact(transaction.split(' '));
-        recievers = transaction[0].split(',');
+        transaction = _.compact(message.split(' '));
+        receivers = transaction[0].split(',');
         payee = ALIASES[transaction[2]] || transaction[2];
-        name = 'borrowes';
+        name = 'borrow';
         amount = transaction[3];
+        type = 'loan';
       }
 
       return {
         event: 'addt',
-        payee: payee === 'self' ? from : payee,
-        name: name,
-        date: date,
-        amount: parseInt(amount, 10),
-        recievers: recievers;
+        data: {
+          payee: payee === 'self' ? from : payee,
+          name: name,
+          date: date || new Date(),
+          amount: parseInt(amount, 10),
+          receivers: receivers,
+          type: type
+        }
       };
     }
   };
@@ -80,7 +78,7 @@ module.exports = (function () {
   this.parse = function (message, from) {
     for (command in COMMANDS) {
       if (message.indexOf(command) > -1) {
-        return FUNC[COMMANDS[command]](message, from);
+        return FUNC[COMMANDS[command]](message.replace(command, '').trim(), from);
       }
     };
 
