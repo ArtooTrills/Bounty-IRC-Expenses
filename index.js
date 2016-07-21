@@ -24,7 +24,7 @@ client.on('message', function(event) {
       console.log('Response', resp.length);
       if(err) {
         event.reply('Error' + err);
-      } else if(resp && resp.length != -1) {
+      } else if(resp.length > 0) {
         event.reply('Member already present');
       } else {
         var newMember = Member({
