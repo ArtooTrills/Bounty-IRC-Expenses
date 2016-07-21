@@ -21,9 +21,10 @@ client.on('message', function(event) {
     Member.find({
       name: name
     }, function(err, resp) {
+      console.log('Response', resp.length);
       if(err) {
         event.reply('Error' + err);
-      } else if(resp && resp.length == -1) {
+      } else if(resp && resp.length != -1) {
         event.reply('Member already present');
       } else {
         var newMember = Member({
