@@ -6,7 +6,7 @@
 var client = require('coffea')({
   host: 'chat.freenode.net',
   nick: 'bounty-bot',
-  channels: ['#caffeineryz']
+  channels: ['#bounty-irc-channel']
 });
 
 //Use mongoose for storing the data into Schema
