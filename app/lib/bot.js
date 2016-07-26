@@ -5,7 +5,7 @@ var irc = require('irc');
 var mysql = require('mysql');
 var async = require('async');
 var transaction = require('./transaction.js');
-var report = require('./report.js');
+var report = require('./report-date.js');
 var config = require('../../config/config');
 var Promise = require('bluebird');
 
