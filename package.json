@@ -1,0 +1,19 @@
+{
+  "name": "artoo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "node node_modules/ts-node/dist/bin.js tests.ts",
+    "run": "node node_modules/ts-node/dist/bin.js index.ts < input.txt"
+  },
+  "author": "Niloy Mondal",
+  "license": "ISC",
+  "dependencies": {
+    "@types/bcrypt-nodejs": "0.0.30",
+    "@types/ramda": "0.0.9",
+    "ramda": "^0.23.0",
+    "ts-node": "^3.0.4",
+    "typescript": "^2.3.2"
+  }
+}
