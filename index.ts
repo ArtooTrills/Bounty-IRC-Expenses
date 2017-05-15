@@ -1,4 +1,4 @@
-/// <reference path="node_modules/@types/bcrypt-nodejs/index.d.ts" />
+/// <reference path="node_modules/@types/node/index.d.ts" />
 
 import readline = require("readline");
 import process = require("process");

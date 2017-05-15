@@ -10,7 +10,7 @@
   "author": "Niloy Mondal",
   "license": "ISC",
   "dependencies": {
-    "@types/bcrypt-nodejs": "0.0.30",
+    "@types/node": "^7.0.18",
     "@types/ramda": "0.0.9",
     "ramda": "^0.23.0",
     "ts-node": "^3.0.4",

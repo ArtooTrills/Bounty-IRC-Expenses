@@ -41,7 +41,7 @@ function normalizeWord(word: string) : string {
 function matches(word1: string, word2: string) : boolean {
     const a = normalizeWord(word1);
     const b = normalizeWord(word2);
-    return word1 === word2;
+    return a === b;
 }
 
 function matchesCommonWords(word: string) : boolean {
