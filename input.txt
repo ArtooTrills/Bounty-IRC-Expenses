@@ -1,0 +1,11 @@
+niloy: listm
+niloy: addm niloy
+niloy: addm aaditya
+niloy: addm shreyas
+niloy: addt paid 600 for dinner yesterday
+shreyas: addt paid 1000 for gift on May 10
+aaditya: addt niloy owes me 100
+aaditya: how much do I owe niloy?
+niloy: how much do I owe shreyas?
+niloy: export data
+niloy: listm
