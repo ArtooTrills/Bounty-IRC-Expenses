@@ -1,7 +1,9 @@
 /// <reference path="node_modules/@types/ramda/index.d.ts" />
+/// <reference path="node_modules/@types/mongodb/index.d.ts" />
 
 import * as Parser from "./parser";
 import * as R from "ramda";
+import {MongoClient, Collection} from "mongodb";
 
 interface Transaction {
     fromMember: string;
@@ -9,8 +11,7 @@ interface Transaction {
     amount: number;
 }
 
-const members : string[] = [];
-const transactions : Transaction[] = [];
+const connectionString = "mongodb://localhost:27017/artoo";
 
 function createTransaction(from: string, to: string, amount: number) : Transaction {
     const obj : Transaction = {
@@ -21,99 +22,111 @@ function createTransaction(from: string, to: string, amount: number) : Transacti
     return obj;
 }
 
-export function addTransaction(fromMember: string, toMember: string, amount: number) : string {
-    if (members.length === 0) {
-        return "Failed to add transaction, add few members first";
-    }
-
-    if (fromMember === "_all_") {
-        const amountPerMember = Math.round(amount / members.length);
-        const objs = R.map(member => createTransaction(member, toMember, amountPerMember), members);
-        objs.forEach(t => transactions.push(t));
-    } else {
-        const obj = createTransaction(fromMember, toMember, amount);
-        transactions.push(obj);
-    }
-
-    return "transaction recorded.";
+function getMembers() : Promise<string[]> {
+    return MongoClient.connect(connectionString)
+        .then(db => db.collection("members").find({}).toArray().then(array => array.map(x => x.name)));
 }
 
-export function addMember(name: string) : string {
-    members.push(name);
-    return `${name} created`;
+export function addTransaction(fromMember: string, toMember: string, amount: number) : Promise<string> {
+    return getMembers().then(members => {
+        if (members.length === 0) {
+            return "Failed to add transaction, add few members first";
+        }
+
+        if (fromMember === "_all_") {
+            const amountPerMember = Math.round(amount / members.length);
+            const objs = R.map(member => createTransaction(member, toMember, amountPerMember), members);
+            return MongoClient.connect(connectionString)
+                .then(db => {
+                    const transactions = db.collection("transactions");
+                    return transactions.insertMany(objs);
+                })
+                .then(_ => "transaction recorded.");
+        } else {
+            const obj = createTransaction(fromMember, toMember, amount);
+            return MongoClient.connect(connectionString)
+                .then(db => {
+                    const transactions = db.collection("transactions");
+                    return transactions.insert(obj)
+                })
+                .then(_ => "transaction recorded.");
+        }
+    });
+}
+
+export function addMember(name: string) : Promise<string> {
+    return MongoClient.connect(connectionString).then(db => {
+        const members = db.collection("members");
+        return members.insert({name});
+    }).then(_ => `${name} created`)
+    .catch(ex => "Add member failed " + ex);
 }
 
 function notSelfReference(t: Transaction) : boolean {
     return t.fromMember !== t.toMember;
 }
 
-function calcMemberGetsBack(name: string) : number {
-    return transactions
-        .filter(notSelfReference)
-        .filter(x => x.toMember === name)
-        .map(x => x.amount)
-        .reduce(R.add, 0);
+function getTransactions() : Promise<Transaction[]> {
+    return MongoClient.connect(connectionString)
+        .then(db => db.collection("transactions").find({}).toArray()
+            .then(a => a.map(x => createTransaction(x.fromMember, x.toMember, x.amount))));
 }
 
-function calcMemberHasToGive(name: string) : number {
-    return transactions
-        .filter(notSelfReference)
-        .filter(x => x.fromMember === name)
-        .map(x => x.amount)
-        .reduce(R.add, 0);
+function calcMemberGetsBack(name: string) : Promise<number> {
+    return getTransactions().then(t => {
+        return t
+            .filter(notSelfReference)
+            .filter(x => x.toMember === name)
+            .map(x => x.amount)
+            .reduce(R.add, 0);
+    });
 }
 
-export function listMembers() : string {
-    if (members.length === 0) {
-        return "No members added";
-    }
-
-    return "Listing all Members:\n" + members.map(member => {
-        const getsBack = calcMemberGetsBack(member);
-        const hasToGive = calcMemberHasToGive(member);
-        return `${member} gets back ${getsBack}, has to give ${hasToGive}`;
-    }).join("\n");
+function calcMemberHasToGive(name: string) : Promise<number> {
+    return getTransactions().then(t => {
+        return t
+            .filter(notSelfReference)
+            .filter(x => x.fromMember === name)
+            .map(x => x.amount)
+            .reduce(R.add, 0);
+    });
 }
 
-export function listSingleMember(name: string) : string {
-    const getsBackFrom = R.pipe(
-        R.filter(notSelfReference),
-        R.filter((x: Transaction) => x.toMember === name),
-        R.groupBy((t: Transaction) => t.fromMember)
-    )(transactions);
+export function listMembers() : Promise<string> {
+    return getMembers().then(members => {
+        if (members.length === 0) {
+            return "No members added";
+        }
 
-    const hasToGive = R.pipe(
-        R.filter(notSelfReference),
-        R.filter((x: Transaction) => x.fromMember === name),
-        R.groupBy((t: Transaction) => t.toMember)
-    )(transactions);
-
-    console.log(getsBackFrom);
-
-    return "";
+        return "Listing all Members:\n" + members.join(", ");
+    });
 }
 
-export function listMemberToMember(member1: string, member2: string) : string {
-    const getsBack =
-        transactions
-        .filter(x => x.fromMember === member2 && x.toMember === member1)
-        .map(x => x.amount)
-        .reduce(R.add, 0);
+export function listMemberToMember(member1: string, member2: string) : Promise<string> {
+    return getTransactions().then(transactions => {
+        const getsBack =
+            transactions
+            .filter(x => x.fromMember === member2 && x.toMember === member1)
+            .map(x => x.amount)
+            .reduce(R.add, 0);
 
-    const hasToGive =
-        transactions
-        .filter(x => x.fromMember === member1 && x.toMember === member2)
-        .map(x => x.amount)
-        .reduce(R.add, 0);
+        const hasToGive =
+            transactions
+            .filter(x => x.fromMember === member1 && x.toMember === member2)
+            .map(x => x.amount)
+            .reduce(R.add, 0);
 
-    return getsBack > hasToGive
-        ? `${member1} gets back ${getsBack - hasToGive} from ${member2}`
-        : `${member1} has to pay ${hasToGive - getsBack} to ${member2}`;
+        return getsBack > hasToGive
+            ? `${member1} gets back ${getsBack - hasToGive} from ${member2}`
+            : `${member1} has to pay ${hasToGive - getsBack} to ${member2}`;
+    });
 }
 
-export function exportTransactions() : string {
-    return "from,to,amount\n" +
-        transactions
-        .map(t => [t.fromMember, t.toMember, t.amount].join(","))
-        .join("\n");
+export function exportTransactions() : Promise<string> {
+    return getTransactions().then(transactions => {
+        return "from,to,amount\n" +
+            transactions
+            .map(t => [t.fromMember, t.toMember, t.amount].join(","))
+            .join("\n");
+    });
 }

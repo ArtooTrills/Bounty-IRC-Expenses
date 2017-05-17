@@ -21,22 +21,20 @@ r1.on("line", line => {
 
     if (parsedResult.type === Parser.ActionType.addMember) {
         const o = <Parser.parseMemberOutput>parsedResult.output;
-        say(Services.addMember(o.name));
+        Services.addMember(o.name).then(say);
     } else if (parsedResult.type === Parser.ActionType.addTransaction) {
         const o = <Parser.parseTransactionOutput>parsedResult.output;
-        say(Services.addTransaction(o.toPerson, o.paidBy, o.amount));
+        Services.addTransaction(o.toPerson, o.paidBy, o.amount).then(say);
     } else if (parsedResult.type === Parser.ActionType.listMembers) {
         const o = <Parser.parseMemberOutput>parsedResult.output;
-        const result = o.name == null
-            ? Services.listMembers()
-            : Services.listSingleMember(o.name);
-        say(result);
+        Services.listMembers().then(say);
     } else if (parsedResult.type === Parser.ActionType.listMemberToMember) {
         const o = <Parser.parseMemberToMemberOutput>parsedResult.output;
-        say(Services.listMemberToMember(o.fromPerson, o.toPerson));
+        Services.listMemberToMember(o.fromPerson, o.toPerson).then(say);
     } else if (parsedResult.type === Parser.ActionType.exportTransactions) {
-        const result = Services.exportTransactions();
-        fs.writeFileSync("transactions.csv", result, {encoding: "utf-8"});
-        say("Data exported to file transactions.csv");
+        Services.exportTransactions().then(result => {
+            fs.writeFileSync("transactions.csv", result, {encoding: "utf-8"});
+            say("Data exported to file transactions.csv");
+        });
     }
 });
