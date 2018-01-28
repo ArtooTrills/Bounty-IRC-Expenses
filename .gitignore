@@ -1,4 +1,6 @@
 .db
+.data
+
 node_modules
 components/routes/_*
 .idea/
