@@ -29,6 +29,8 @@ var bot_options = {
     scopes: ['bot']
 };
 
+const models = require('./models');
+
 bot_options.json_file_store = __dirname + '/.data/db/'; // store user data in a simple JSON format
 
 // Create the Botkit controller, which controls all instances of the bot.

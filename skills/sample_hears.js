@@ -15,6 +15,13 @@ module.exports = function(controller) {
         bot.reply(message, "Hi there, you're on workspace: " + message.team)
     });
 
+    controller.hears(['^addt$'], 'direct_message,direct_mention', function(bot, message) {
+        bot.reply(message, "Add transaction : started")
+    });
+
+    controller.hears(['^addm$'], 'direct_message,direct_mention', function(bot, message) {
+        bot.reply(message, "Add member : started")
+    });
 
 
 };
