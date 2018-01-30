@@ -17,15 +17,33 @@ module.exports = {
             allowNull: false,
             type: Sequelize.DATE,
         },
-        transactionsDate :{
+        updatedAt: {
+            allowNull: false,
+            type: Sequelize.DATE
+        },
+        transactionDate :{
             allowNull: false,
             type: Sequelize.DATE,
         },
-        bankId: {
-            type: Sequelize.INTEGER,
+        spender: {
+            type: Sequelize.STRING,
+            onDelete: "CASCADE",
+            allowNull: false,
+            references: { model: 'Members', key: 'id' }
+        },
+        receiver: {
+            type: Sequelize.STRING,
             onDelete: "CASCADE",
             allowNull: true,
             references: { model: 'Members', key: 'id' }
+        },
+        reason : {
+            allowNull: false,
+            type: Sequelize.STRING,
+        },
+        type : {
+            allowNull: false,
+            type: Sequelize.STRING,
         },
         desc : {
             allowNull: false,

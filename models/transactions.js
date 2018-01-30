@@ -9,8 +9,10 @@ module.exports = function(sequelize, DataTypes) {
         },
         transactionDate: {type: DataTypes.DATE, allowNull: true, defaultValue: DataTypes.NOW},
         createdAt: {type: DataTypes.DATE, allowNull: true, defaultValue: DataTypes.NOW},
-        desc: {type: DataTypes.STRING, allowNull: false}
-
+        updatedAt: {type: DataTypes.DATE, allowNull: true, defaultValue: DataTypes.NOW},
+        reason: {type: DataTypes.STRING, allowNull: false},
+        type: {type: DataTypes.STRING, allowNull: false},
+        desc: {type: DataTypes.STRING, allowNull: false},
     }, {
         classMethods: {
             associate: function(models) {
@@ -18,8 +20,15 @@ module.exports = function(sequelize, DataTypes) {
                 Transaction.belongsTo(models.Members, {
                     onDelete: "CASCADE",
                     foreignKey: {
-                        allowNull: True,
-                        name: 'memberId'
+                        allowNull: true,
+                        name: 'receiver'
+                    },
+                });
+                Transaction.belongsTo(models.Members, {
+                    onDelete: "CASCADE",
+                    foreignKey: {
+                        allowNull: false,
+                        name: 'spender'
                     },
                 });
             }

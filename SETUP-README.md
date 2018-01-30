@@ -77,3 +77,27 @@ Also checkout the official Botkit documentation repo here: (https://github.com/h
 Congratulations your slack app is bot is up and running
 
 
+
+<hr>
+## Sample Chat text
+
+## to add members
+@xbot addm @Shezy
+@xbot addm amit
+@xbot addm deepak
+
+### to add transaction
+//syntax :   {spender} paid {amount} for {reason} on {date}. [{receiver}]
+@xbot addt I paid 200 for lunch at fasoos on Feb 3
+@xbot addt I paid 800 for lunch at kfc on Feb 7 with all
+@xbot addt paid 800 for lunch at fasoos on Feb 10. with deepak
+@xbot addt paid 800 for lunch at fasoos on Feb 10. with deepak amit
+@xbot addt amit paid 900 for dinner at fasoos on Feb 10. with deepak me
+
+//syntax : {receiver} owes {spender} {amount} [for {reason} on {date}]
+@xbot addt I owe amit 200 for lunch at McD
+@xbot addt I owe amit 200 for lunch at kfc on  feb 12
+@xbot addt amit owes me 180 for dinner at bking on feb 13
+@xbot addt amit owes me 120 for dinner at bking yesterday
+@xbot addt amit owes me 120 for dinner at kfc
+@xbot addt amit owes deepak 160 for dinner at bking on feb 15

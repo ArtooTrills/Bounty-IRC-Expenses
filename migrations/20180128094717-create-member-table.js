@@ -28,7 +28,15 @@ module.exports = {
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE,
+        type: Sequelize.DATE
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      slackId:{
+        allowNull: true,
+        type: Sequelize.STRING
       }
     });
 

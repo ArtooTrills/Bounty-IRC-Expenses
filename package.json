@@ -13,9 +13,12 @@
     "debug": "^2.3.3",
     "express": "^4.14.0",
     "node-env-file": "^0.1.8",
+    "nodemon": "^1.14.11",
+    "regex": "^0.1.1",
     "sequelize": "3.30.4",
     "sequelize-cli": "^3.2.0",
-    "sqlite3": "^3.1.13"
+    "sqlite3": "^3.1.13",
+    "uuid": "^3.2.1"
   },
   "devDependencies": {},
   "repository": {
