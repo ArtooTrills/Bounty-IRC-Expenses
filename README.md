@@ -40,8 +40,8 @@ May the force be with you!
 ### few helpful hints:
 
 1. link that will help you start interact with slack. 
-> https://www.youtube.com/watch?v=jTaoU6u1Fcg. 
-> https://github.com/chatbot-tutorials/slack-starter-chatbot
+ - https://www.youtube.com/watch?v=jTaoU6u1Fcg. 
+ - https://github.com/chatbot-tutorials/slack-starter-chatbot
 
 
 
