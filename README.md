@@ -36,3 +36,12 @@ If you are going for the kill and you really want to wow us:
 When you are done, please just create a pull request on this repo. We would like you to come in and present your code to the whole team. 
 
 May the force be with you!
+
+### few helpful hints:
+
+1. link that will help you start interact with slack. 
+> https://www.youtube.com/watch?v=jTaoU6u1Fcg. 
+> https://github.com/chatbot-tutorials/slack-starter-chatbot
+
+
+
